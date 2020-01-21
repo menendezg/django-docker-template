@@ -1,0 +1,39 @@
+# docker template for ms django projects
+# revision: 14/01/2020
+#
+# vars:
+#   - container_name : this is the folder of our django project
+#   - volumes: the folder where we want persist
+#   - expose: the port we want to expose 
+#   - links: container wich we want to stay connected
+#
+version: '3'
+
+services:
+  web:
+    build: ./foo
+    container_name: foo
+    volumes:
+      - .:/foo
+    ports:
+      - "8000"
+    links:
+      - redis:redis
+  nginx:
+    image: nginx:latest
+    container_name: ng01
+    build: ./nginx
+    ports:
+      - 8000:8000
+    depends_on:
+      - web
+  redis:
+    restart: always
+    image: redis:latest
+    ports:
+      - '6379'
+    volumes:
+      - redisdata:/data
+
+volumes:
+  redisdata:
